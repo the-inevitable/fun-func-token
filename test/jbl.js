@@ -1,47 +1,47 @@
 var jbl = artifacts.require("./jbl.sol");
 
 contract('jbl', function(accounts) {
-    it("Create 1 400 000 tokens at the owner account", function(done) {
-        jbl.deployed().then(function(instance) {
+    it("should put 1 400 000 jbl in the first account", function() {
+        return jbl.deployed().then(function(instance) {
             return instance.balanceOf.call(accounts[0]);
         }).then(function(balance) {
-            assert.equal(web3.toWei(balance.valueOf(), 'ether'), web3.toWei(1400000, 'ether'), "1400000 wasn't in the first account");
+            console.log(web3.toWei(1400000, 'ether'))
+            assert.equal(balance.valueOf(), 1400000 * (10**18), "1400000 wasn't in the first account");
         });
-        done();
     });
-
-    it('Should transfer tokens correctly', function(done){
+    it("should send coin correctly", function() {
         var token;
-        var amount = 10;
 
+        // Get initial balances of first and second account.
         var account_one = accounts[0];
         var account_two = accounts[1];
 
-        var acc_one_before;
-        var acc_one_after;
-        var acc_two_before;
-        var acc_two_after;
+        var account_one_starting_balance;
+        var account_two_starting_balance;
+        var account_one_ending_balance;
+        var account_two_ending_balance;
 
-        jbl.deployed().then(function(instance){
+        var amount = 10;
+
+        return jbl.deployed().then(function(instance) {
             token = instance;
             return token.balanceOf.call(account_one);
-        }).then(function(balanceOne) {
-            acc_one_before = balanceOne.toNumber();
+        }).then(function(balance) {
+            account_one_starting_balance = balance.toNumber();
             return token.balanceOf.call(account_two);
-        }).then(function(balanceTwo) {
-            acc_two_before = balanceTwo.toNumber();
+        }).then(function(balance) {
+            account_two_starting_balance = balance.toNumber();
             return token.transfer(account_two, amount, {from: account_one});
         }).then(function() {
             return token.balanceOf.call(account_one);
-        }).then(function(balanceOne){
-            acc_one_after = balanceOne.toNumber();
+        }).then(function(balance) {
+            account_one_ending_balance = balance.toNumber();
             return token.balanceOf.call(account_two);
-        }).then(function(balanceTwo){
-            acc_two_after = balanceTwo.toNumber();
+        }).then(function(balance) {
+            account_two_ending_balance = balance.toNumber();
 
-            assert.equal(acc_one_after, acc_one_before - amount, "Token transfer works wrong!");
-            assert.equal(acc_two_after, acc_two_before + amount, "Token transfer works wrong!");
+            assert.equal(account_one_ending_balance, account_one_starting_balance - amount, "Amount wasn't correctly taken from the sender");
+            assert.equal(account_two_ending_balance, account_two_starting_balance + amount, "Amount wasn't correctly sent to the receiver");
         });
-        done();
     });
 });

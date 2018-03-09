@@ -1,16 +1,15 @@
-import "zeppelin-solidity/contracts/token/ERC20/MintableToken.sol";
+pragma solidity ^0.4.0;
 
-pragma solidity ^0.4.11;
+import "/home/vlad/jbl/node_modules/zeppelin-solidity/contracts/token/ERC20/MintableToken.sol";
 
 contract jbl is MintableToken {
 
-    string public name = "James Bullo Lancing";
+    string public name = "James Suicide";
     string public symbol = "JBL";
     uint public decimals = 18;
 
-    function jbl(uint256 _amount ) {
+    function jbl(uint256 _amount) public {
         owner = msg.sender;
         mint(owner, _amount);
     }
-
 }
