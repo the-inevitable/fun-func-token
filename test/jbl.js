@@ -1,4 +1,4 @@
-var JCR = artifacts.require("./jbl.sol");
+var jbl = artifacts.require("./jbl.sol");
 
 contract('jbl', function(accounts) {
     it("Create 1 400 000 tokens at the owner account", function(done) {
